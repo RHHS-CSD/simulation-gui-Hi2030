@@ -29,48 +29,20 @@ public class SimulationGUIEngine {
     
     //Declare 2D array for grid
     String[][] globalGrid;
+    int inputPred, inputPrey, inputSize;
     
     public SimulationGUIEngine(){
-        int inputPred = 2;
-        int inputPrey = 10;
-        int inputSize = 20;
-        
-        run(inputPred,inputPrey,inputSize);
+        inputPred = 2;
+        inputPrey = 10;
+        inputSize = 20;
+        globalGrid = new String[inputSize][inputSize];
     }
     
     /**
-     * @param args the command line arguments
-     */
-    /*
-    public static void main(String[] args) {
-        //Get user input for grid size and number of predators/prey to allow for flexibility
-        /*Scanner kb = new Scanner(System.in);
-        System.out.print("Number of Predators: ");
-        int inputPred = kb.nextInt();
-        System.out.print("Number of Prey: ");
-        int inputPrey = kb.nextInt();
-        System.out.print("Grid Size: ");
-        int inputSize = kb.nextInt();
-        
-        //Set input for testing and running of the program
-        int inputPred = 2;
-        int inputPrey = 10;
-        int inputSize = 20;
-        
-        run(inputPred,inputPrey,inputSize);
-    }*/
-    
-    /**
      * Starts program
-     * @param inputPred     The number of predators on the grid
-     * @param inputPrey     The number of prey on the grid
-     * @param inputSize     The size of the grid
      */
-    public void run(int inputPred, int inputPrey, int inputSize){
+    public void run(){
         //Initialize variables and grid based on size and number of predators and prey inputted
-        globalGrid = new String[inputSize][inputSize];
-        int numPredators = inputPred;
-        int numPrey = inputPrey;
         String preySign = "@";
         String predSign = "P";
         String foodSign = "F";
@@ -78,7 +50,7 @@ public class SimulationGUIEngine {
         Scanner kb = new Scanner(System.in);
         
         //Set initial random positions for predator and prey
-        initialPositionSet(numPredators, numPrey, predSign, preySign);
+        initialPositionSet(inputPred, inputPrey, predSign, preySign);
         
         //Loop and keep getting user input until user decides to quit
         do{

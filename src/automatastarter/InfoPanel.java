@@ -51,7 +51,7 @@ public class InfoPanel extends javax.swing.JPanel {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("Welcome to the Predator and Prey Simulation!\n- Predators are represented with RED\n- Prey are represented with BLACK\n- Food is represented in GREEN\n- Empty spots are represented in WHITE\n\nRules:\n- Predator eat prey to reproduce\n- Prey eat food, but have a chance to reproduce as long as \n  there is an empty space next to them\n- If predator or prey don't eat within a certain amount of steps,\n  they will die\n");
+        jTextArea1.setText("Welcome to the Predator and Prey Simulation!\n- Predators are represented with RED\n- Prey are represented with BLACK\n- Food is represented in GREEN\n- Empty spots are represented in WHITE\n\nRules:\n- Predator eat prey to reproduce\n- Prey eat food, but have a chance to reproduce as long as \n  there is an empty space next to them\n- If predator or prey don't eat within a certain amount of steps,\n  they will die\n\nHow to Use:\n- You can play, pause, or reset the simulation\n- The speed at which the simulation runs can change\n- Predators, Prey and Food can be customly added or deleted ");
         jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -73,9 +73,9 @@ public class InfoPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(backButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(84, 84, 84))
         );
     }// </editor-fold>//GEN-END:initComponents
 

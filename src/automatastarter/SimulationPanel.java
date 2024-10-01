@@ -6,24 +6,11 @@
 package automatastarter;
 
 import utils.CardSwitcher;
-import utils.ImageUtil;
 import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
@@ -31,18 +18,14 @@ import javax.swing.Timer;
  * @author michael.roy-diclemen
  */
 public class SimulationPanel extends javax.swing.JPanel implements MouseListener {
-
     public static final String CARD_NAME = "game";
-
     CardSwitcher switcher; // This is the parent panel
     Timer animTimer;
-    // Image img1 = Toolkit.getDefaultToolkit().getImage("yourFile.jpg");
-    BufferedImage img1;
     //variables to control your animation elements
     int x = 0;
     int y = 10;
-    int xdir = 5;
-    int lineX = 0;
+    
+    SimulationGUIEngine engine = new SimulationGUIEngine();
 
     /**
      * Creates new form GamePanel
@@ -51,24 +34,21 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         initComponents();
         setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
 
-        img1 = ImageUtil.loadAndResizeImage("yourFile.jpg", 300, 300);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
-
         this.setFocusable(true);
 
-        // tell the program we want to listen to the mouse
+        //Tell the program we want to listen to the mouse
         addMouseListener(this);
-        //tells us the panel that controls this one
+        //Tells us the panel that controls this one
         switcher = p;
-        //create and start a Timer for animation
+        //Create and start a Timer for animation
         animTimer = new Timer(10, new AnimTimerTick());
-        animTimer.start();
 
-        //set up the key bindings
-        setupKeys();
+        //Set up the key bindings
+        //setupKeys();
 
     }
 
-    private void setupKeys() {
+    /*private void setupKeys() {
         //these lines map a physical key, to a name, and then a name to an 'action'.  You will change the key, name and action to suit your needs
         this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftKey");
         this.getActionMap().put("leftKey", new Move("LEFT"));
@@ -81,14 +61,26 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
         this.getInputMap().put(KeyStroke.getKeyStroke("X"), "xKey");
         this.getActionMap().put("xKey", new Move("x"));
-    }
+    }*/
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (img1 != null) {
-            g.drawImage(img1, x, y, this);
+        
+        //Draw grid variables
+        int startXCoord = 11;
+        int startYCoord = 46;
+        int endXCoord = 511;
+        int endYCoord = 546;
+        int boxSize = 25;
+        
+        //Draw grid
+        for(int i = 0; i <= engine.globalGrid.length; i++){
+            g.drawLine(startXCoord, (startYCoord + i * boxSize), endXCoord, (startYCoord + i * boxSize));
         }
-        g.drawLine(lineX, 0, 300, 300);
+        for(int j = 0; j <= engine.globalGrid.length; j++){
+            g.drawLine((startXCoord + j * boxSize), startYCoord, (startXCoord + j * boxSize), endYCoord);
+        }
     }
 
     /**
@@ -101,6 +93,13 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     private void initComponents() {
 
         backButton = new javax.swing.JButton();
+        playButton = new javax.swing.JButton();
+        pauseButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        speedSlider = new javax.swing.JSlider();
+        speedLabel = new javax.swing.JLabel();
+        customLabel = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -116,41 +115,112 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             }
         });
 
+        playButton.setText("Play");
+        playButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playButtonActionPerformed(evt);
+            }
+        });
+
+        pauseButton.setText("Pause");
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauseButtonActionPerformed(evt);
+            }
+        });
+
+        resetButton.setText("Reset");
+
+        speedSlider.setMaximum(1000);
+        speedSlider.setMinimum(10);
+        speedSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                speedSliderStateChanged(evt);
+            }
+        });
+
+        speedLabel.setText("Speed");
+
+        customLabel.setText("Custom");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Predator", "Prey", "Food", "Delete" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backButton)
-                .addContainerGap(284, Short.MAX_VALUE))
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(speedLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(customLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, 0, 93, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backButton)
-                .addContainerGap(274, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(speedLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(speedSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(customLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(660, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        lineX = 0;
+        //lineX = 0;
     }//GEN-LAST:event_formComponentShown
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         switcher.switchToCard(IntroPanel.CARD_NAME);
+        animTimer.stop();
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        animTimer.start();
+    }//GEN-LAST:event_playButtonActionPerformed
+
+    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
+        animTimer.stop();
+    }//GEN-LAST:event_pauseButtonActionPerformed
+
+    private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedSliderStateChanged
+        animTimer.setDelay(speedSlider.getValue());
+    }//GEN-LAST:event_speedSliderStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel customLabel;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton pauseButton;
+    private javax.swing.JButton playButton;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JLabel speedLabel;
+    private javax.swing.JSlider speedSlider;
     // End of variables declaration//GEN-END:variables
 
     /**
-     * This event captures a click which is defined as pressing and releasing in
-     * the same area
-     *
+     * This event captures a click which is defined as pressing and releasing in the same area
      * @param me
      */
     public void mouseClicked(MouseEvent me) {
@@ -161,7 +231,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
     /**
      * When the mountain is pressed
-     *
      * @param me
      */
     public void mousePressed(MouseEvent me) {
@@ -170,7 +239,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
     /**
      * When the mouse button is released
-     *
      * @param me
      */
     public void mouseReleased(MouseEvent me) {
@@ -179,7 +247,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
     /**
      * When the mouse enters the area
-     *
      * @param me
      */
     public void mouseEntered(MouseEvent me) {
@@ -188,7 +255,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
     /**
      * When the mouse exits the panel
-     *
      * @param me
      */
     public void mouseExited(MouseEvent me) {
@@ -198,8 +264,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     /**
      * Everything inside here happens when you click on a captured key.
      */
-    private class Move extends AbstractAction {
-
+   /* private class Move extends AbstractAction {
         String key;
 
         public Move(String akey) {
@@ -211,7 +276,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             System.out.println("llll" + key);
             switch(key){
                 case "d": x+=2; break;
-                case "x": animTimer.stop(); switcher.switchToCard(EndPanel.CARD_NAME); break;
+                case "x": animTimer.stop(); switcher.switchToCard(IntroPanel.CARD_NAME); break;
             }
             if (key.equals("d")) {
                 x = x + 2;
@@ -219,7 +284,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             
         }
 
-    }
+    }*/
 
     /**
      * Everything inside this actionPerformed will happen every time the
@@ -228,8 +293,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     private class AnimTimerTick implements ActionListener {
 
         public void actionPerformed(ActionEvent ae) {
-            //the stuff we want to change every clock tick
-            lineX++;
             //force redraw
             repaint();
             

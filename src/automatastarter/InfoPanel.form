@@ -41,9 +41,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="backButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="326" max="-2" attributes="0"/>
-              <EmptySpace pref="39" max="32767" attributes="0"/>
+              <EmptySpace pref="87" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="500" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,7 +72,7 @@
               <Font name="Helvetica Neue" size="18" style="0"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="Welcome to the Predator and Prey Simulation!&#xa;- Predators are represented with RED&#xa;- Prey are represented with BLACK&#xa;- Food is represented in GREEN&#xa;- Empty spots are represented in WHITE&#xa;&#xa;Rules:&#xa;- Predator eat prey to reproduce&#xa;- Prey eat food, but have a chance to reproduce as long as &#xa;  there is an empty space next to them&#xa;- If predator or prey don&apos;t eat within a certain amount of steps,&#xa;  they will die&#xa;"/>
+            <Property name="text" type="java.lang.String" value="Welcome to the Predator and Prey Simulation!&#xa;- Predators are represented with RED&#xa;- Prey are represented with BLACK&#xa;- Food is represented in GREEN&#xa;- Empty spots are represented in WHITE&#xa;&#xa;Rules:&#xa;- Predator eat prey to reproduce&#xa;- Prey eat food, but have a chance to reproduce as long as &#xa;  there is an empty space next to them&#xa;- If predator or prey don&apos;t eat within a certain amount of steps,&#xa;  they will die&#xa;&#xa;How to Use:&#xa;- You can play, pause, or reset the simulation&#xa;- The speed at which the simulation runs can change&#xa;- Predators, Prey and Food can be customly added or deleted "/>
           </Properties>
         </Component>
       </SubComponents>

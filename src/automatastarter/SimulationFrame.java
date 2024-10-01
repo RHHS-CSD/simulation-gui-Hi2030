@@ -40,7 +40,7 @@ public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,
     CardLayout cl;
     SimulationPanel sp;
     final int FRAME_WIDTH = 700;
-    final int FRAME_HEIGHT = 400;
+    final int FRAME_HEIGHT = 700;
     Timer t = new Timer(10, this);
 
     /**
@@ -59,7 +59,7 @@ public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,
         setDefaultCloseOperation(SimulationFrame.EXIT_ON_CLOSE);    //If user closes program, stop the program
 
         
-        addPanels();                            //Add 4 panels to the CardLayout
+        addPanels();                            //Add 3 panels to the CardLayout
         switchToCard(IntroPanel.CARD_NAME);     //Default start with intro panel
 
         //Focus for the game panel to capture key events
@@ -71,11 +71,10 @@ public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,
         });
     }
 
-    //Add splash screen, info screen, game screen, and end game screen
+    //Add splash screen, info screen, and simulation screen
     private void addPanels() {
         sp = new SimulationPanel(this);
         cardPanel.add(sp,SimulationPanel.CARD_NAME);
-        cardPanel.add(new EndPanel(this),EndPanel.CARD_NAME);
         cardPanel.add(new IntroPanel(this),IntroPanel.CARD_NAME);
         cardPanel.add(new InfoPanel(this),InfoPanel.CARD_NAME);
     }
