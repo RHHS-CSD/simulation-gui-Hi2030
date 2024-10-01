@@ -14,12 +14,20 @@ import javax.swing.JPanel;
  * @author michael.roy-diclemen
  */
 public class IntroPanel extends javax.swing.JPanel {
-        public static final String CARD_NAME = "intro";
+    //Declare global variables
+    public static final String CARD_NAME = "intro";
     CardSwitcher switcher = null;
+    
     /**
      * Creates new form IntroPanel
      */
     public IntroPanel(CardSwitcher p) {
+        setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
+        
+        //startButton.setBounds(SimulationFrame.WIDTH/2, SimulationFrame.HEIGHT/2, BUTTON_WIDTH, BUTTON_HEIGHT);
+        //infoButton.setBounds(SimulationFrame.WIDTH/2, startButton.getY() + 20, BUTTON_WIDTH, BUTTON_HEIGHT);
+        //quitButton.setBounds(SimulationFrame.WIDTH/2, infoButton.getY() + 20, BUTTON_WIDTH, BUTTON_HEIGHT);
+        
         initComponents();
         switcher = p;
     }
@@ -33,21 +41,31 @@ public class IntroPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        GameButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
         infoButton = new javax.swing.JButton();
+        quitButton = new javax.swing.JButton();
 
-        GameButton.setText("Game");
-        GameButton.addActionListener(new java.awt.event.ActionListener() {
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        startButton.setText("Start");
+        startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GameButtonActionPerformed(evt);
+                startButtonActionPerformed(evt);
             }
         });
 
-        infoButton.setText("I don't know why I'm here");
+        infoButton.setText("How to Use");
         infoButton.setToolTipText("");
         infoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 infoButtonActionPerformed(evt);
+            }
+        });
+
+        quitButton.setText("Quit");
+        quitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quitButtonActionPerformed(evt);
             }
         });
 
@@ -58,35 +76,45 @@ public class IntroPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(GameButton))
+                        .addGap(171, 171, 171)
+                        .addComponent(startButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(infoButton)))
-                .addContainerGap(144, Short.MAX_VALUE))
+                        .addGap(158, 158, 158)
+                        .addComponent(infoButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(174, 174, 174)
+                        .addComponent(quitButton)))
+                .addContainerGap(168, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(GameButton)
+                .addGap(97, 97, 97)
+                .addComponent(startButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(infoButton)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(quitButton)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void GameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GameButtonActionPerformed
-       switcher.switchToCard(GamePanel.CARD_NAME);
-    }//GEN-LAST:event_GameButtonActionPerformed
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+       switcher.switchToCard(SimulationPanel.CARD_NAME);
+    }//GEN-LAST:event_startButtonActionPerformed
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         switcher.switchToCard(InfoPanel.CARD_NAME);
     }//GEN-LAST:event_infoButtonActionPerformed
 
+    private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_quitButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton GameButton;
     private javax.swing.JButton infoButton;
+    private javax.swing.JButton quitButton;
+    private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 }

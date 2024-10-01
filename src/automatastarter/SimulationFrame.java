@@ -15,12 +15,12 @@ CardLayout cl = (CardLayout)getContentPane().getLayout();
 CardLayout cl = (CardLayout)this.getRootPane().getContentPane().getLayout();
 
 B - Keyboard
-GamePanel uses keyboard bindings starting on line 50
+SimulationPanel uses keyboard bindings starting on line 50
 
 C- Mouse
-GamePanel implements MouseListener and then adds the listener to the panel
+SimulationPanel implements MouseListener and then adds the listener to the panel
 
-D - Animation Timer - is set up in the Constructor of GamePanel
+D - Animation Timer - is set up in the Constructor of SimulationPanel
  */
 package automatastarter;
 
@@ -32,37 +32,44 @@ import java.awt.event.ComponentAdapter;
  *
  * @author michael.roy-diclemen
  */
-public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
-
+public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher {
+    //Declare global variables
     CardLayout cl;
-    GamePanel gp;
+    SimulationPanel sp;
+    final int FRAME_WIDTH = 700;
+    final int FRAME_HEIGHT = 400;
 
     /**
-     * Creates new form FrameForGame
+     * Creates new form SimulationFrame
      */
-    public FrameForGame() {
+    public SimulationFrame() {
         initComponents();
 
-        //card layout shows one panel at a time
+        //Card layout shows one panel at a time
         cl = new CardLayout();
         cardPanel.setLayout(cl);
+        
+        setLocationRelativeTo(null);                                //Set frame to center of the screen
+        setSize(FRAME_WIDTH,FRAME_HEIGHT);                          //Set frame size
+        setDefaultCloseOperation(SimulationFrame.EXIT_ON_CLOSE);    //If user closes program, stop the program
 
-        //add 3 panels to the CardLayout
-        addPanels();
-        switchToCard(IntroPanel.CARD_NAME);
+        
+        addPanels();                            //Add 4 panels to the CardLayout
+        switchToCard(IntroPanel.CARD_NAME);     //Default start with intro panel
 
-        //some focus stuff for the game panel to capture key events
-        gp.addComponentListener(new ComponentAdapter() {
+        //Focus for the game panel to capture key events
+        sp.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
-                gp.requestFocusInWindow();
+                sp.requestFocusInWindow();
             }
         });
     }
 
+    //Add splash screen, info screen, game screen, and end game screen
     private void addPanels() {
-        gp = new GamePanel(this);
-        cardPanel.add(gp,GamePanel.CARD_NAME);
+        sp = new SimulationPanel(this);
+        cardPanel.add(sp,SimulationPanel.CARD_NAME);
         cardPanel.add(new EndPanel(this),EndPanel.CARD_NAME);
         cardPanel.add(new IntroPanel(this),IntroPanel.CARD_NAME);
         cardPanel.add(new InfoPanel(this),InfoPanel.CARD_NAME);
@@ -85,11 +92,11 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
         cardPanel.setLayout(cardPanelLayout);
         cardPanelLayout.setHorizontalGroup(
             cardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 555, Short.MAX_VALUE)
+            .addGap(0, 700, Short.MAX_VALUE)
         );
         cardPanelLayout.setVerticalGroup(
             cardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 373, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -100,9 +107,7 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(cardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 79, Short.MAX_VALUE))
+            .addComponent(cardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -125,20 +130,21 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameForGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimulationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameForGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimulationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameForGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimulationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameForGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimulationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameForGame().setVisible(true);
+                new SimulationFrame().setVisible(true);
             }
         });
     }

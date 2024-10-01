@@ -20,6 +20,7 @@ public class InfoPanel extends javax.swing.JPanel {
      * Creates new form IntroPanel
      */
     public InfoPanel(CardSwitcher p) {
+        setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
         initComponents();
         switcher = p;
     }
@@ -35,6 +36,8 @@ public class InfoPanel extends javax.swing.JPanel {
 
         backButton = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -47,16 +50,16 @@ public class InfoPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(151, 151, 151)
+                .addContainerGap()
                 .addComponent(backButton)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addContainerGap(332, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
+                .addContainerGap()
                 .addComponent(backButton)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(269, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

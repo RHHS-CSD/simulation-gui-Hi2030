@@ -30,7 +30,7 @@ import javax.swing.Timer;
  *
  * @author michael.roy-diclemen
  */
-public class GamePanel extends javax.swing.JPanel implements MouseListener {
+public class SimulationPanel extends javax.swing.JPanel implements MouseListener {
 
     public static final String CARD_NAME = "game";
 
@@ -47,8 +47,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     /**
      * Creates new form GamePanel
      */
-    public GamePanel(CardSwitcher p) {
+    public SimulationPanel(CardSwitcher p) {
         initComponents();
+        setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
 
         img1 = ImageUtil.loadAndResizeImage("yourFile.jpg", 300, 300);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
 
@@ -99,31 +100,37 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        backButton = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
             }
         });
 
-        jLabel1.setText("Game");
+        backButton.setText("Quit Simulation");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jLabel1)
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(backButton)
+                .addContainerGap(284, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(jLabel1)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(backButton)
+                .addContainerGap(274, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,9 +138,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         lineX = 0;
     }//GEN-LAST:event_formComponentShown
 
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        switcher.switchToCard(IntroPanel.CARD_NAME);
+    }//GEN-LAST:event_backButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton backButton;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -221,6 +232,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             lineX++;
             //force redraw
             repaint();
+            
+            //ADD A CONSTANT UPDATE ON SIZE OF THE FRAME AND UPDATE PANEL SIZE AND GRID SIZE GUI
         }
     }
 }
