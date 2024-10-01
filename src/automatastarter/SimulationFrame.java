@@ -26,24 +26,29 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
+import javax.swing.Timer;
 
 /**
  *
  * @author michael.roy-diclemen
  */
-public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher {
+public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,ActionListener{
     //Declare global variables
     CardLayout cl;
     SimulationPanel sp;
     final int FRAME_WIDTH = 700;
     final int FRAME_HEIGHT = 400;
+    Timer t = new Timer(10, this);
 
     /**
      * Creates new form SimulationFrame
      */
     public SimulationFrame() {
         initComponents();
+        t.start();
 
         //Card layout shows one panel at a time
         cl = new CardLayout();
@@ -154,6 +159,11 @@ public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher 
         cl.show(cardPanel, cardName);
     }
 
+    //Ensures the frame stays at a certain size, not allowing its size to change
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        setSize(FRAME_WIDTH,FRAME_HEIGHT);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel cardPanel;
     // End of variables declaration//GEN-END:variables
