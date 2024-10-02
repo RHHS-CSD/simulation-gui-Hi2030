@@ -27,9 +27,13 @@ public class SimulationGUIEngine {
     boolean[] nearPreyArray = new boolean[4];
     boolean[] nearFoodArray = new boolean[4];
     
+    public String preySign = "@";
+    public String predSign = "P";
+    public String foodSign = "F";
+    
     //Declare 2D array for grid
     String[][] globalGrid;
-    int inputPred, inputPrey, inputSize;
+    public int inputPred, inputPrey, inputSize;
     
     public SimulationGUIEngine(){
         inputPred = 2;
@@ -43,14 +47,12 @@ public class SimulationGUIEngine {
      */
     public void run(){
         //Initialize variables and grid based on size and number of predators and prey inputted
-        String preySign = "@";
-        String predSign = "P";
-        String foodSign = "F";
+        
         boolean quit = false;
         Scanner kb = new Scanner(System.in);
         
         //Set initial random positions for predator and prey
-        initialPositionSet(inputPred, inputPrey, predSign, preySign);
+        initialPositionSet();
         
         //Loop and keep getting user input until user decides to quit
         do{
@@ -93,14 +95,14 @@ public class SimulationGUIEngine {
         System.out.println("preyColumnPos: " + preyColumnPosition.toString());
         System.out.println("predRowPos: " + predRowPosition.toString());
         System.out.println("predColumnPos: " + predColumnPosition.toString());*/
-        reprint();
+        //reprint();
     }
     
     ////Set initial random positions for predator and prey
-    private void initialPositionSet(int numPredators, int numPrey, String predSign, String preySign){    
+    public void initialPositionSet(){    
         //Declare variables
-        int pred = numPredators;
-        int prey = numPrey;
+        int pred = inputPred;
+        int prey = inputPrey;
         
         //Goes through each row in the grid 
         for(int i = 0; i < globalGrid.length; i++){
@@ -132,8 +134,6 @@ public class SimulationGUIEngine {
                 globalGrid[i][j] = ".";
             }
         }
-        //Print out the initial positions for the predator and prey when all have been added to the grid
-        reprint();
     }
     
     //Helper method to initially generate predators and prey at random spots in the grid
@@ -154,7 +154,7 @@ public class SimulationGUIEngine {
         //Ensures all predators and prey get printed by the end of the
         //grid through increasing chances of generating after 3/4 of the grid
         if(row > 3*(globalGrid.length)/4){
-            printPredPrey = generateHelper(10,5);
+            printPredPrey = generateHelper(3,3);
         }
         return printPredPrey;
     }
@@ -323,13 +323,14 @@ public class SimulationGUIEngine {
     }
     
     //Allows the predators and prey to move around the grid
-    private void movement(String predSign, String preySign, String foodSign){
+    //private void movement(String predSign, String preySign, String foodSign){
+    public void movement(String predSign, String preySign, String foodSign){
         //Declare variables
         int chosenDirection;
         Random r = new Random();    
 
         //For each predator
-        for(int i = 0; i < predRowPosition.size()-1; i++){
+        for(int i = 0; i < predRowPosition.size(); i++){
             //Checks space around each predator
             checkSurroundings(predRowPosition.get(i), predColumnPosition.get(i), predSign, preySign, foodSign);
             ArrayList<Integer> possibleDirections = new ArrayList<>();
@@ -373,7 +374,7 @@ public class SimulationGUIEngine {
         }
         
         //For each prey
-        for(int j = 0; j < preyRowPosition.size()-1; j++){
+        for(int j = 0; j < preyRowPosition.size(); j++){
             //Checks space around each prey
             checkSurroundings(preyRowPosition.get(j), preyColumnPosition.get(j), predSign, preySign, foodSign);
             ArrayList<Integer> possibleDirections = new ArrayList<>();

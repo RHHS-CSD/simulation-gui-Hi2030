@@ -5,6 +5,7 @@
  */
 package automatastarter;
 
+import java.awt.Color;
 import utils.CardSwitcher;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -41,8 +42,8 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         //Tells us the panel that controls this one
         switcher = p;
         //Create and start a Timer for animation
-        animTimer = new Timer(10, new AnimTimerTick());
-
+        animTimer = new Timer(100, new AnimTimerTick());
+        engine.initialPositionSet();
         //Set up the key bindings
         //setupKeys();
 
@@ -81,6 +82,37 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         for(int j = 0; j <= engine.globalGrid.length; j++){
             g.drawLine((startXCoord + j * boxSize), startYCoord, (startXCoord + j * boxSize), endYCoord);
         }
+        
+        drawPredators(g, startXCoord, startYCoord, boxSize);
+        drawPrey(g, startXCoord, startYCoord, boxSize);
+        drawFood(g, startXCoord, startYCoord, boxSize);
+    }
+    
+    private void drawPredators(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        g.setColor(Color.red);
+        for(int i = 0; i < (engine.predRowPosition).size(); i++){
+            int predRow = engine.predRowPosition.get(i);
+            int predColumn = engine.predColumnPosition.get(i);
+            g.fillRect((startXCoord + predColumn * boxSize), (startYCoord + predRow * boxSize), boxSize, boxSize);
+        }
+    }
+    
+    private void drawPrey(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        g.setColor(Color.black);
+        for(int i = 0; i < (engine.preyRowPosition).size(); i++){
+            int preyRow = engine.preyRowPosition.get(i);
+            int preyColumn = engine.preyColumnPosition.get(i);
+            g.fillRect((startXCoord + preyColumn * boxSize), (startYCoord + preyRow * boxSize), boxSize, boxSize);
+        }
+    }
+    
+    private void drawFood(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        g.setColor(Color.green);
+        for(int i = 0; i < (engine.foodRowPosition).size(); i++){
+            int foodRow = engine.foodRowPosition.get(i);
+            int foodColumn = engine.foodColumnPosition.get(i);
+            g.fillRect((startXCoord + foodColumn * boxSize), (startYCoord + foodRow * boxSize), boxSize, boxSize);
+        }
     }
 
     /**
@@ -102,11 +134,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         jComboBox1 = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
-            }
-        });
 
         backButton.setText("Quit Simulation");
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -130,9 +157,15 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         });
 
         resetButton.setText("Reset");
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
 
-        speedSlider.setMaximum(1000);
+        speedSlider.setMaximum(500);
         speedSlider.setMinimum(10);
+        speedSlider.setValue(100);
         speedSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 speedSliderStateChanged(evt);
@@ -186,10 +219,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        //lineX = 0;
-    }//GEN-LAST:event_formComponentShown
-
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         switcher.switchToCard(IntroPanel.CARD_NAME);
         animTimer.stop();
@@ -206,6 +235,18 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedSliderStateChanged
         animTimer.setDelay(speedSlider.getValue());
     }//GEN-LAST:event_speedSliderStateChanged
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        animTimer.stop();
+        engine.predRowPosition.clear();
+        engine.predColumnPosition.clear();
+        engine.preyRowPosition.clear();
+        engine.preyColumnPosition.clear();
+        engine.foodRowPosition.clear();
+        engine.foodColumnPosition.clear();
+        engine.initialPositionSet();
+        repaint();
+    }//GEN-LAST:event_resetButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -293,6 +334,8 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     private class AnimTimerTick implements ActionListener {
 
         public void actionPerformed(ActionEvent ae) {
+            //engine.next(engine.predSign, engine.preySign, engine.foodSign);
+            engine.movement(engine.predSign, engine.preySign, engine.foodSign);
             //force redraw
             repaint();
             
