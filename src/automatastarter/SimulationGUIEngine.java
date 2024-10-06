@@ -87,16 +87,20 @@ public class SimulationGUIEngine {
      */
     public void next (String predSign, String preySign, String foodSign){
         generateFood(foodSign);
-        predation(predSign, preySign, foodSign);
+        //predation(predSign, preySign, foodSign);
         //eatFood(predSign, preySign, foodSign);
         //reproduction(predSign, preySign, foodSign);
         movement(predSign, preySign, foodSign);
-        /*System.out.println("preyRowPos: " + preyRowPosition.toString());
-        System.out.println("preyColumnPos: " + preyColumnPosition.toString());
-        System.out.println("predRowPos: " + predRowPosition.toString());
-        System.out.println("predColumnPos: " + predColumnPosition.toString());*/
-        //reprint();
     }
+    
+    private void predDeath(){
+        
+    }
+    
+    private void preyDeath(){
+        
+    }
+    
     
     ////Set initial random positions for predator and prey
     public void initialPositionSet(){    
@@ -148,13 +152,13 @@ public class SimulationGUIEngine {
         //grid through increasing chances of generating after half way of the grid
         //and before 3/4 of the grid
         if(row > (globalGrid.length)/2 && row <= 3*(globalGrid.length)/4){
-            printPredPrey = generateHelper(40,15);
+            printPredPrey = generateHelper(30,15);
         }
         
         //Ensures all predators and prey get printed by the end of the
         //grid through increasing chances of generating after 3/4 of the grid
         if(row > 3*(globalGrid.length)/4){
-            printPredPrey = generateHelper(3,3);
+            printPredPrey = generateHelper(5,5);
         }
         return printPredPrey;
     }
@@ -171,7 +175,7 @@ public class SimulationGUIEngine {
         if(choose == 1){
             //If predator doesn't get generated, return to initialPosition function and add an empty spot
             //and insert empty space
-            if(rand.nextInt(predChance) + 1 == 6){
+            if(rand.nextInt(predChance) + 1 == 1){
                 //If predator does get generated, it will be added to the grid
                 printPredPrey = 1;
             }
@@ -180,7 +184,7 @@ public class SimulationGUIEngine {
         else{
             //If prey doesn't get generated, return to initialPosition function and add an empty spot
             //and insert empty space
-            if(rand.nextInt(preyChance) + 1 == 3){
+            if(rand.nextInt(preyChance) + 1 == 1){
                 //If prey does get generated, it will be added to the grid
                 printPredPrey = -1;
             }
@@ -323,8 +327,7 @@ public class SimulationGUIEngine {
     }
     
     //Allows the predators and prey to move around the grid
-    //private void movement(String predSign, String preySign, String foodSign){
-    public void movement(String predSign, String preySign, String foodSign){
+    private void movement(String predSign, String preySign, String foodSign){
         //Declare variables
         int chosenDirection;
         Random r = new Random();    

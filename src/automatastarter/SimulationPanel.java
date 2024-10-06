@@ -24,7 +24,10 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     Timer animTimer;
     //variables to control your animation elements
     int x = 0;
-    int y = 10;
+    int y = 0;
+    boolean customPred, customPrey, customFood, customEmpty = false;
+    int startXCoord, startYCoord, endXCoord, endYCoord, boxSize;
+    int frameNum, predPopulation, preyPopulation = 0;
     
     SimulationGUIEngine engine = new SimulationGUIEngine();
 
@@ -43,37 +46,20 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         switcher = p;
         //Create and start a Timer for animation
         animTimer = new Timer(100, new AnimTimerTick());
+        frameNum = 0;
         engine.initialPositionSet();
-        //Set up the key bindings
-        //setupKeys();
-
     }
-
-    /*private void setupKeys() {
-        //these lines map a physical key, to a name, and then a name to an 'action'.  You will change the key, name and action to suit your needs
-        this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftKey");
-        this.getActionMap().put("leftKey", new Move("LEFT"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("W"), "wKey");
-        this.getActionMap().put("wKey", new Move("w"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("D"), "dKey");
-        this.getActionMap().put("dKey", new Move("d"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("X"), "xKey");
-        this.getActionMap().put("xKey", new Move("x"));
-    }*/
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
         //Draw grid variables
-        int startXCoord = 11;
-        int startYCoord = 46;
-        int endXCoord = 511;
-        int endYCoord = 546;
-        int boxSize = 25;
+        startXCoord = 11;
+        startYCoord = 46;
+        endXCoord = 511;
+        endYCoord = 546;
+        boxSize = 25;
         
         //Draw grid
         for(int i = 0; i <= engine.globalGrid.length; i++){
@@ -94,6 +80,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             int predRow = engine.predRowPosition.get(i);
             int predColumn = engine.predColumnPosition.get(i);
             g.fillRect((startXCoord + predColumn * boxSize), (startYCoord + predRow * boxSize), boxSize, boxSize);
+            predPopulation = engine.predRowPosition.size();
         }
     }
     
@@ -103,6 +90,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             int preyRow = engine.preyRowPosition.get(i);
             int preyColumn = engine.preyColumnPosition.get(i);
             g.fillRect((startXCoord + preyColumn * boxSize), (startYCoord + preyRow * boxSize), boxSize, boxSize);
+            preyPopulation = engine.preyRowPosition.size();
         }
     }
     
@@ -131,7 +119,9 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         speedSlider = new javax.swing.JSlider();
         speedLabel = new javax.swing.JLabel();
         customLabel = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        customComboBox = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        statusText = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -176,29 +166,46 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
         customLabel.setText("Custom");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Predator", "Prey", "Food", "Delete" }));
+        customComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Predator", "Prey", "Food", "Empty Space" }));
+        customComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customComboBoxActionPerformed(evt);
+            }
+        });
+
+        statusText.setEditable(false);
+        statusText.setColumns(20);
+        statusText.setLineWrap(true);
+        statusText.setRows(5);
+        statusText.setText("Status");
+        jScrollPane1.setViewportView(statusText);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
-                .addComponent(speedLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(customLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, 0, 93, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(speedLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(customLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(customComboBox, 0, 93, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -214,8 +221,10 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
                         .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(speedSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(customLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(660, Short.MAX_VALUE))
+                    .addComponent(customComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(367, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -244,38 +253,119 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         engine.preyColumnPosition.clear();
         engine.foodRowPosition.clear();
         engine.foodColumnPosition.clear();
+        frameNum = 0;
         engine.initialPositionSet();
+        predPopulation = engine.predRowPosition.size();
+        preyPopulation = engine.preyRowPosition.size();
         repaint();
     }//GEN-LAST:event_resetButtonActionPerformed
+
+    private void customComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customComboBoxActionPerformed
+        animTimer.stop();
+        if(customComboBox.getSelectedItem().equals("Predator")){
+            customPred = true;
+            customPrey = false;
+            customFood = false;
+            customEmpty = false;
+        } else if(customComboBox.getSelectedItem().equals("Prey")){
+            customPred = false;
+            customPrey = true;
+            customFood = false;
+            customEmpty = false;
+        } else if(customComboBox.getSelectedItem().equals("Food")){
+            customPred = false;
+            customPrey = false;
+            customFood = true;
+            customEmpty = false;
+        } else if(customComboBox.getSelectedItem().equals("Empty Space")){
+            customPred = false;
+            customPrey = false;
+            customFood = false;
+            customEmpty = true;
+        } else {
+            customPred = false;
+            customPrey = false;
+            customFood = false;
+            customEmpty = false;
+        }
+    }//GEN-LAST:event_customComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JComboBox<String> customComboBox;
     private javax.swing.JLabel customLabel;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton pauseButton;
     private javax.swing.JButton playButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JLabel speedLabel;
     private javax.swing.JSlider speedSlider;
+    private javax.swing.JTextArea statusText;
     // End of variables declaration//GEN-END:variables
 
     /**
      * This event captures a click which is defined as pressing and releasing in the same area
      * @param me
      */
+    @Override
     public void mouseClicked(MouseEvent me) {
         System.out.println("Click: " + me.getX() + ":" + me.getY());
-        x = 5;
-        y = 5;
+        x = me.getX();
+        y = me.getY();
+        if(x >= startXCoord && x <= endXCoord && y >= startXCoord && y <= endYCoord){
+            int xPos = topLeftX(x);
+            int yPos = topLeftY(y);
+            
+            if(customPred == true){
+                engine.predRowPosition.add(yPos-1);
+                engine.predColumnPosition.add(xPos-1);
+            } else if (customPrey == true){
+                engine.preyRowPosition.add(yPos-1);
+                engine.preyColumnPosition.add(xPos-1);
+            } else if (customFood == true){
+                engine.foodRowPosition.add(yPos-1);
+                engine.foodColumnPosition.add(xPos-1);
+            } else if (customEmpty == true){
+                //If that spot has prey delete
+                //If that spot has pred delete
+                //If that spot has food delete
+            }
+        }
+        repaint();
+    }
+    
+    //Adding in the wrong position
+    private int topLeftX(int currentX){
+        int columnNum = 0;
+        for(int i = 0; i < engine.globalGrid[0].length; i++){
+            if(startXCoord + i * boxSize >= currentX){
+                System.out.println(i);
+                break;
+            }
+            columnNum++;
+        }
+        return columnNum;
+    }
+    
+    private int topLeftY(int currentY){
+        int rowNum = 0;
+        for(int i = 0; i < engine.globalGrid.length; i++){
+            if(startYCoord + i * boxSize >= currentY){
+                System.out.println(i);
+                break;
+            }
+            rowNum++;
+        }
+        return rowNum;
     }
 
     /**
-     * When the mountain is pressed
+     * When the mouse button is pressed
      * @param me
      */
     public void mousePressed(MouseEvent me) {
-        System.out.println("Press: " + me.getX() + ":" + me.getY());
+        //System.out.println("Press: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -283,7 +373,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      * @param me
      */
     public void mouseReleased(MouseEvent me) {
-        System.out.println("Release: " + me.getX() + ":" + me.getY());
+        //System.out.println("Release: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -291,7 +381,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      * @param me
      */
     public void mouseEntered(MouseEvent me) {
-        System.out.println("Enter: " + me.getX() + ":" + me.getY());
+        //System.out.println("Enter: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -299,33 +389,8 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      * @param me
      */
     public void mouseExited(MouseEvent me) {
-        System.out.println("Exit: " + me.getX() + ":" + me.getY());
+        //System.out.println("Exit: " + me.getX() + ":" + me.getY());
     }
-
-    /**
-     * Everything inside here happens when you click on a captured key.
-     */
-   /* private class Move extends AbstractAction {
-        String key;
-
-        public Move(String akey) {
-            key = akey;
-        }
-
-        public void actionPerformed(ActionEvent ae) {
-            // here you decide what you want to happen if a particular key is pressed
-            System.out.println("llll" + key);
-            switch(key){
-                case "d": x+=2; break;
-                case "x": animTimer.stop(); switcher.switchToCard(IntroPanel.CARD_NAME); break;
-            }
-            if (key.equals("d")) {
-                x = x + 2;
-            }
-            
-        }
-
-    }*/
 
     /**
      * Everything inside this actionPerformed will happen every time the
@@ -334,12 +399,10 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     private class AnimTimerTick implements ActionListener {
 
         public void actionPerformed(ActionEvent ae) {
-            //engine.next(engine.predSign, engine.preySign, engine.foodSign);
-            engine.movement(engine.predSign, engine.preySign, engine.foodSign);
-            //force redraw
+            engine.next(engine.predSign, engine.preySign, engine.foodSign);
+            frameNum++;
+            statusText.setText("Frame Number: " + frameNum + "\nPred. Pop.: " + predPopulation + "\nPrey. Pop.: " + preyPopulation);
             repaint();
-            
-            //ADD A CONSTANT UPDATE ON SIZE OF THE FRAME AND UPDATE PANEL SIZE AND GRID SIZE GUI
         }
     }
 }
