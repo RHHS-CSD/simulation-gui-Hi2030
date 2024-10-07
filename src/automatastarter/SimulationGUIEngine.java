@@ -37,17 +37,17 @@ public class SimulationGUIEngine {
     
     public SimulationGUIEngine(){
         inputPred = 2;
-        inputPrey = 10;
+        inputPrey = 100;
         inputSize = 20;
         globalGrid = new String[inputSize][inputSize];
     }
     
     /**
-     * Starts program
+     * Starts program, used only for console program, not used in GUI
      */
     public void run(){
         //Initialize variables and grid based on size and number of predators and prey inputted
-        
+
         boolean quit = false;
         Scanner kb = new Scanner(System.in);
         
@@ -89,8 +89,39 @@ public class SimulationGUIEngine {
         generateFood(foodSign);
         //predation(predSign, preySign, foodSign);
         //eatFood(predSign, preySign, foodSign);
-        //reproduction(predSign, preySign, foodSign);
+        reproduction(predSign, preySign, foodSign);
         movement(predSign, preySign, foodSign);
+        checkOutOfBounds();
+    }
+    
+    private void checkOutOfBounds(){
+        for(int i = 0; i < predRowPosition.size(); i++){
+            if(predRowPosition.get(i) >= globalGrid.length || predColumnPosition.get(i) >= globalGrid.length){
+                predRowPosition.remove(i);
+                predColumnPosition.remove(i);
+            } else if(predRowPosition.get(i) < 0 || predColumnPosition.get(i) < 0){
+                predRowPosition.remove(i);
+                predColumnPosition.remove(i);
+            }
+        }
+        for(int j = 0; j < preyRowPosition.size(); j++){
+            if(preyRowPosition.get(j) >= globalGrid.length || preyColumnPosition.get(j) >= globalGrid.length){
+                preyRowPosition.remove(j);
+                preyColumnPosition.remove(j);
+            } else if(preyRowPosition.get(j) < 0 || preyColumnPosition.get(j) < 0){
+                preyRowPosition.remove(j);
+                preyColumnPosition.remove(j);
+            }
+        }
+        for(int k = 0; k < foodRowPosition.size(); k++){
+            if(foodRowPosition.get(k) >= globalGrid.length || foodColumnPosition.get(k) >= globalGrid.length){
+                foodRowPosition.remove(k);
+                foodColumnPosition.remove(k);
+            } else if(foodRowPosition.get(k) < 0 || foodColumnPosition.get(k) < 0){
+                foodRowPosition.remove(k);
+                foodColumnPosition.remove(k);
+            }
+        }
     }
     
     private void predDeath(){
@@ -101,8 +132,9 @@ public class SimulationGUIEngine {
         
     }
     
-    
-    ////Set initial random positions for predator and prey
+    /**
+     * Set initial random positions for predator and prey
+     */
     public void initialPositionSet(){    
         //Declare variables
         int pred = inputPred;
@@ -145,7 +177,7 @@ public class SimulationGUIEngine {
         int printPredPrey = 0;
         //Default chances of generating predator and prey before half way point of the grid
         if(row <= (globalGrid.length)/2){
-            printPredPrey = generateHelper(65,30);
+            printPredPrey = generateHelper(65,20);
         }
         
         //Ensures all predators and prey get printed by the end of the
@@ -158,7 +190,7 @@ public class SimulationGUIEngine {
         //Ensures all predators and prey get printed by the end of the
         //grid through increasing chances of generating after 3/4 of the grid
         if(row > 3*(globalGrid.length)/4){
-            printPredPrey = generateHelper(5,5);
+            printPredPrey = generateHelper(5,3);
         }
         return printPredPrey;
     }
@@ -192,7 +224,6 @@ public class SimulationGUIEngine {
         return printPredPrey;
     }
     
-    
     //Used to check if prey is near predator, and if so, the predator eats the prey and reproduces
     private void predation(String predSign, String preySign, String foodSign){
         //Declare arraylist of prey that needs to be removed
@@ -214,24 +245,57 @@ public class SimulationGUIEngine {
                             globalGrid[predRowPosition.get(i)-1][predColumnPosition.get(i)] = predSign;
                             predRowPosition.add(predRowPosition.get(i)-1);
                             predColumnPosition.add(predColumnPosition.get(i));
+                            
+                            
+                            for(int k = 0; k < preyRowPosition.size(); k++){
+                                if(preyRowPosition.get(k) == predRowPosition.get(i)-1 && preyColumnPosition.get(k) == predColumnPosition.get(i)){
+                                    preyRowPosition.remove(k);
+                                    preyColumnPosition.remove(k);
+                                    break;
+                                }
+                            }
                             break;
                         case 2:
                             //Replaces the dead prey by reproducing and creating another predator
                             globalGrid[predRowPosition.get(i)+1][predColumnPosition.get(i)] = predSign;
                             predRowPosition.add(predRowPosition.get(i)+1);
                             predColumnPosition.add(predColumnPosition.get(i));
+                            
+                            for(int k = 0; k < preyRowPosition.size(); k++){
+                                if(preyRowPosition.get(k) == predRowPosition.get(i)+1 && preyColumnPosition.get(k) == predColumnPosition.get(i)){
+                                    preyRowPosition.remove(k);
+                                    preyColumnPosition.remove(k);
+                                    break;
+                                }
+                            }
                             break;
                         case 3:
                             //Replaces the dead prey by reproducing and creating another predator
                             globalGrid[predRowPosition.get(i)][predColumnPosition.get(i)-1] = predSign;
                             predRowPosition.add(predRowPosition.get(i));
                             predColumnPosition.add(predColumnPosition.get(i)-1);
+                            
+                            for(int k = 0; k < preyRowPosition.size(); k++){
+                                if(preyRowPosition.get(k) == predRowPosition.get(i) && preyColumnPosition.get(k) == predColumnPosition.get(i)-1){
+                                    preyRowPosition.remove(k);
+                                    preyColumnPosition.remove(k);
+                                    break;
+                                }
+                            }
                             break;
                         default:
                             //Replaces the dead prey by reproducing and creating another predator
                             globalGrid[predRowPosition.get(i)][predColumnPosition.get(i)+1] = predSign;
                             predRowPosition.add(predRowPosition.get(i));
                             predColumnPosition.add(predColumnPosition.get(i)+1);
+                            
+                            for(int k = 0; k < preyRowPosition.size(); k++){
+                                if(preyRowPosition.get(k) == predRowPosition.get(i) && preyColumnPosition.get(k) == predColumnPosition.get(i)+1){
+                                    preyRowPosition.remove(k);
+                                    preyColumnPosition.remove(k);
+                                    break;
+                                }
+                            }
                             break;
                     }
                     //Removes the foods from the array outside of the iteration to prevent exception
@@ -253,7 +317,7 @@ public class SimulationGUIEngine {
             //Iterate through the open spaces available
             for(int j = 0; j < openSpaceArray.length; j++){
                 //Have 1% chance for prey to reproduce if empty space next to it
-                int rand = r.nextInt(100)+1;
+                int rand = r.nextInt(1000)+1;
                 //If there is an open space and if the 1% chance is achieved
                 if(openSpaceArray[j] == true && rand == 1){
                     switch (j) {
@@ -268,9 +332,9 @@ public class SimulationGUIEngine {
                                 preyColumnPosition.add(preyRowPosition.get(i));
                                 globalGrid[preyRowPosition.get(i)-1][preyRowPosition.get(i)] = preySign;
                             } catch (ArrayIndexOutOfBoundsException e){
-                                preyRowPosition.add(0);
+                                /*preyRowPosition.add(0);
                                 preyColumnPosition.add(preyRowPosition.get(i));
-                                globalGrid[0][preyRowPosition.get(i)] = preySign;
+                                globalGrid[0][preyRowPosition.get(i)] = preySign;*/
                             }
                             break;
                         //If the open space is below, then add a prey below the current one
@@ -283,9 +347,10 @@ public class SimulationGUIEngine {
                                 preyColumnPosition.add(preyRowPosition.get(i));
                                 globalGrid[preyRowPosition.get(i)+1][preyRowPosition.get(i)] = preySign;
                             } catch (ArrayIndexOutOfBoundsException e){
+                                /*
                                 preyRowPosition.add(19);
                                 preyColumnPosition.add(preyRowPosition.get(i));
-                                globalGrid[19][preyRowPosition.get(i)] = preySign;
+                                globalGrid[19][preyRowPosition.get(i)] = preySign;*/
                             }
                             break;
                         //If the open space is to the left, then add a prey to the left of the current one
@@ -298,9 +363,9 @@ public class SimulationGUIEngine {
                                 preyColumnPosition.add(preyRowPosition.get(i)-1);
                                 globalGrid[preyRowPosition.get(i)][preyRowPosition.get(i)-1] = preySign;
                             } catch (ArrayIndexOutOfBoundsException e){
-                                preyRowPosition.add(preyRowPosition.get(i));
+                                /*preyRowPosition.add(preyRowPosition.get(i));
                                 preyColumnPosition.add(0);
-                                globalGrid[preyRowPosition.get(i)][0] = preySign;
+                                globalGrid[preyRowPosition.get(i)][0] = preySign;*/
                             }
                             break;
                         //If the open space is to the right, then add a prey to the right of the current one
@@ -313,9 +378,9 @@ public class SimulationGUIEngine {
                                 preyColumnPosition.add(preyRowPosition.get(i)+1);
                                 globalGrid[preyRowPosition.get(i)][preyRowPosition.get(i)+1] = preySign;
                             } catch (ArrayIndexOutOfBoundsException e){
-                                preyRowPosition.add(preyRowPosition.get(i));
+                                /*preyRowPosition.add(preyRowPosition.get(i));
                                 preyColumnPosition.add(19);
-                                globalGrid[preyRowPosition.get(i)][19] = preySign;
+                                globalGrid[preyRowPosition.get(i)][19] = preySign;*/
                             }
                             break;
                         default: break;
@@ -396,27 +461,43 @@ public class SimulationGUIEngine {
             }
             //Move up and replace the spot with an empty space
             if(chosenDirection == 0){
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
-                preyRowPosition.set(j,preyRowPosition.get(j)-1);
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                try{
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
+                    preyRowPosition.set(j,preyRowPosition.get(j)-1);
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                } catch (ArrayIndexOutOfBoundsException e){
+                    
+                }                
             } 
             //Move down and replace the spot with an empty space
             else if (chosenDirection == 1){
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
-                preyRowPosition.set(j,preyRowPosition.get(j)+1);
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                try{
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
+                    preyRowPosition.set(j,preyRowPosition.get(j)+1);
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                } catch (ArrayIndexOutOfBoundsException e){
+                    
+                }    
             } 
             //Move left and replace the spot with an empty space
             else if (chosenDirection == 2){
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
-                preyColumnPosition.set(j,preyColumnPosition.get(j)-1);
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                try{
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
+                    preyColumnPosition.set(j,preyColumnPosition.get(j)-1);
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign;
+                } catch (ArrayIndexOutOfBoundsException e){
+                    
+                }    
             } 
             //Move right and replace the spot with an empty space
             else if (chosenDirection == 3){
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
-                preyColumnPosition.set(j,preyColumnPosition.get(j)+1);
-                globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign; 
+                try{
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = ".";
+                    preyColumnPosition.set(j,preyColumnPosition.get(j)+1);
+                    globalGrid[preyRowPosition.get(j)][preyColumnPosition.get(j)] = preySign; 
+                } catch (ArrayIndexOutOfBoundsException e){
+                    
+                }    
             }
         }
     }
@@ -430,8 +511,8 @@ public class SimulationGUIEngine {
             for(int j = 0; j < globalGrid[0].length;j++){
                 //If there is an empty space
                 if(globalGrid[i][j].equals(".")){
-                    //There is a 1/500 or 0.002% chance of food appearing in an empty spot
-                    if(r.nextInt(500)+1 == 1){
+                    //There is a 1/5000 or 0.0002% chance of food appearing in an empty spot
+                    if(r.nextInt(5000)+1 == 1){
                         //If food does spawn, add its position to the arrays and add to the grid
                         globalGrid[i][j] = foodSign;
                         foodRowPosition.add(i);
@@ -536,86 +617,89 @@ public class SimulationGUIEngine {
             nearPreyArray [i] = false;
             nearFoodArray [i] = false;
         }
-        
-        //Check up for out of bounds
-        if(up < 0){
+        try{
+            //Check up for out of bounds
+            if(up < 0){
+                openSpaceArray[0] = false;
+            } else {
+                //Otherwise, check if there is a predator nearby
+                if((globalGrid[up][columnPosition]).equals(predSign)){
+                    nearPredArray[0] = true;
+                    openSpaceArray[0] = false;
+                }           
+                //Check if there is a prey nearby
+                else if((globalGrid[up][columnPosition]).equals(preySign)){
+                    nearPreyArray[0] = true;
+                    openSpaceArray[0] = false;
+                }
+                //Check if there is food nearby
+                else if((globalGrid[up][columnPosition]).equals(foodSign)){
+                    nearFoodArray[0] = true;
+                    openSpaceArray[0] = false;
+                }
+            }
+            //Check down for out of bounds
+            if(down > globalGrid.length-1){
+                openSpaceArray[1] = false;
+            } else {
+                //Otherwise, check if there is a predator nearby
+                if((globalGrid[down][columnPosition]).equals(predSign)){
+                    nearPredArray[1] = true;
+                    openSpaceArray[1] = false;
+                }             
+                //Check if there is prey nearby
+                else if((globalGrid[down][columnPosition]).equals(preySign)){
+                    nearPreyArray[1] = true;
+                    openSpaceArray[1] = false;
+                }
+                //Check if there is food nearby
+                else if((globalGrid[down][columnPosition]).equals(foodSign)){
+                    nearFoodArray[1] = true;
+                    openSpaceArray[1] = false;
+                }
+            }
+            //Check left for out of bounds
+            if(left < 0){
+                openSpaceArray[2] = false;
+            } else{
+                //Otherwise, check if there is a predator nearby
+                if((globalGrid[rowPosition][left]).equals(predSign)){
+                    nearPredArray[2] = true;
+                    openSpaceArray[2] = false;
+                }
+                //Check if there is prey nearby
+                else if((globalGrid[rowPosition][left]).equals(preySign)){
+                    nearPreyArray[2] = true;
+                    openSpaceArray[2] = false;
+                }
+                //Check if there is food nearby
+                else if((globalGrid[rowPosition][left]).equals(foodSign)){
+                    nearFoodArray[2] = true;
+                    openSpaceArray[2] = false;
+                }
+            }
+            //Check right for out of bounds
+            if(right > globalGrid[0].length-1){
+                openSpaceArray[3] = false;
+            } else{
+                //Otherwise, check if there is a predator nearby
+                if((globalGrid[rowPosition][right]).equals(predSign)){
+                    nearPredArray[3] = true;
+                    openSpaceArray[3] = false;
+                }            
+                //Check if there is prey nearby
+                else if((globalGrid[rowPosition][right]).equals(preySign)){
+                    nearPreyArray[3] = true;
+                    openSpaceArray[3] = false;
+                }
+                //Check if there is food nearby
+                else if((globalGrid[rowPosition][right]).equals(foodSign)){
+                    nearFoodArray[3] = true;
+                    openSpaceArray[3] = false;
+                }
+            }
+        } catch(ArrayIndexOutOfBoundsException e){
             openSpaceArray[0] = false;
-        } else {
-            //Otherwise, check if there is a predator nearby
-            if((globalGrid[up][columnPosition]).equals(predSign)){
-                nearPredArray[0] = true;
-                openSpaceArray[0] = false;
-            }           
-            //Check if there is a prey nearby
-            else if((globalGrid[up][columnPosition]).equals(preySign)){
-                nearPreyArray[0] = true;
-                openSpaceArray[0] = false;
-            }
-            //Check if there is food nearby
-            else if((globalGrid[up][columnPosition]).equals(foodSign)){
-                nearFoodArray[0] = true;
-                openSpaceArray[0] = false;
-            }
-        }
-        //Check down for out of bounds
-        if(down > globalGrid.length-1){
-            openSpaceArray[1] = false;
-        } else {
-            //Otherwise, check if there is a predator nearby
-            if((globalGrid[down][columnPosition]).equals(predSign)){
-                nearPredArray[1] = true;
-                openSpaceArray[1] = false;
-            }             
-            //Check if there is prey nearby
-            else if((globalGrid[down][columnPosition]).equals(preySign)){
-                nearPreyArray[1] = true;
-                openSpaceArray[1] = false;
-            }
-            //Check if there is food nearby
-            else if((globalGrid[down][columnPosition]).equals(foodSign)){
-                nearFoodArray[1] = true;
-                openSpaceArray[1] = false;
-            }
-        }
-        //Check left for out of bounds
-        if(left < 0){
-            openSpaceArray[2] = false;
-        } else{
-            //Otherwise, check if there is a predator nearby
-            if((globalGrid[rowPosition][left]).equals(predSign)){
-                nearPredArray[2] = true;
-                openSpaceArray[2] = false;
-            }
-            //Check if there is prey nearby
-            else if((globalGrid[rowPosition][left]).equals(preySign)){
-                nearPreyArray[2] = true;
-                openSpaceArray[2] = false;
-            }
-            //Check if there is food nearby
-            else if((globalGrid[rowPosition][left]).equals(foodSign)){
-                nearFoodArray[2] = true;
-                openSpaceArray[2] = false;
-            }
-        }
-        //Check right for out of bounds
-        if(right > globalGrid[0].length-1){
-            openSpaceArray[3] = false;
-        } else{
-            //Otherwise, check if there is a predator nearby
-            if((globalGrid[rowPosition][right]).equals(predSign)){
-                nearPredArray[3] = true;
-                openSpaceArray[3] = false;
-            }            
-            //Check if there is prey nearby
-            else if((globalGrid[rowPosition][right]).equals(preySign)){
-                nearPreyArray[3] = true;
-                openSpaceArray[3] = false;
-            }
-            //Check if there is food nearby
-            else if((globalGrid[rowPosition][right]).equals(foodSign)){
-                nearFoodArray[3] = true;
-                openSpaceArray[3] = false;
-            }
         }
     }
     

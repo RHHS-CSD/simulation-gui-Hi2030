@@ -27,7 +27,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     int y = 0;
     boolean customPred, customPrey, customFood, customEmpty = false;
     int startXCoord, startYCoord, endXCoord, endYCoord, boxSize;
-    int frameNum, predPopulation, preyPopulation = 0;
+    int frameNum, predPopulation, preyPopulation, numFood = 0;
     
     SimulationGUIEngine engine = new SimulationGUIEngine();
 
@@ -100,6 +100,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             int foodRow = engine.foodRowPosition.get(i);
             int foodColumn = engine.foodColumnPosition.get(i);
             g.fillRect((startXCoord + foodColumn * boxSize), (startYCoord + foodRow * boxSize), boxSize, boxSize);
+            numFood = engine.foodRowPosition.size();
         }
     }
 
@@ -257,6 +258,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         engine.initialPositionSet();
         predPopulation = engine.predRowPosition.size();
         preyPopulation = engine.preyRowPosition.size();
+        numFood = engine.foodRowPosition.size();
         repaint();
     }//GEN-LAST:event_resetButtonActionPerformed
 
@@ -401,8 +403,20 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         public void actionPerformed(ActionEvent ae) {
             engine.next(engine.predSign, engine.preySign, engine.foodSign);
             frameNum++;
-            statusText.setText("Frame Number: " + frameNum + "\nPred. Pop.: " + predPopulation + "\nPrey. Pop.: " + preyPopulation);
+            statusText.setText("Frame Number: " + frameNum + "\nPred. Pop.: " + predPopulation + 
+                    "\nPrey. Pop.: " + preyPopulation + "\nFood Amount: " + numFood);
             repaint();
+            
+//            System.out.println("Prey Row:");
+//            for(int i = 0; i < engine.preyRowPosition.size(); i++){
+//                System.out.print(engine.preyRowPosition.get(i) + ",");
+//            }
+//            System.out.println("\n");
+//            System.out.println("Prey Column:");
+//            for(int i = 0; i < engine.preyColumnPosition.size(); i++){
+//                System.out.print(engine.preyColumnPosition.get(i) + ",");
+//            }
+//            System.out.println("\n");
         }
     }
 }
