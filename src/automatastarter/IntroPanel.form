@@ -25,11 +25,9 @@
               <EmptySpace min="-2" pref="237" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="introAnimation1" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="startButton" max="32767" attributes="0"/>
-                      <Component id="infoButton" pref="224" max="32767" attributes="0"/>
-                      <Component id="quitButton" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="startButton" max="32767" attributes="0"/>
+                  <Component id="infoButton" pref="224" max="32767" attributes="0"/>
+                  <Component id="quitButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="239" max="32767" attributes="0"/>
           </Group>

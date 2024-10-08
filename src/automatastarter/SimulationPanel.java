@@ -15,20 +15,24 @@ import java.awt.event.MouseListener;
 import javax.swing.Timer;
 
 /**
- *
- * @author michael.roy-diclemen
+ * Predator and Prey Simulation GUI
+ * Panel where the simulation takes place/runs
+ * @author Haydn Yip
  */
 public class SimulationPanel extends javax.swing.JPanel implements MouseListener {
     public static final String CARD_NAME = "game";
-    CardSwitcher switcher; // This is the parent panel
-    Timer animTimer;
-    //variables to control your animation elements
+    CardSwitcher switcher;      //Parent panel
+    Timer animTimer;            //Timer that will be used to update the panel
+    
+//Variables to control the GUI elements
     int x = 0;
     int y = 0;
-    boolean customPred, customPrey, customFood, customEmpty = false;
+    boolean customPred, customPrey, customFood = false;
     int startXCoord, startYCoord, endXCoord, endYCoord, boxSize;
     int frameNum, predPopulation, preyPopulation, numFood = 0;
     
+    //Create an object for the engine in order to access its
+    //variables and other methods
     SimulationGUIEngine engine = new SimulationGUIEngine();
 
     /**
@@ -36,6 +40,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      */
     public SimulationPanel(CardSwitcher p) {
         initComponents();
+        //Set size of the panel to be the same as the frame
         setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
 
         this.setFocusable(true);
@@ -44,9 +49,12 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         addMouseListener(this);
         //Tells us the panel that controls this one
         switcher = p;
-        //Create and start a Timer for animation
+        //Create and start a Timer for the 'animation'/graphics
         animTimer = new Timer(100, new AnimTimerTick());
+        //Variables is used to reset the count on the number of frames that have gone by
         frameNum = 0;
+        //Call on the engine to set up the positions of the predator and prey
+        //before the simulation starts
         engine.initialPositionSet();
     }
 
@@ -69,37 +77,59 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             g.drawLine((startXCoord + j * boxSize), startYCoord, (startXCoord + j * boxSize), endYCoord);
         }
         
+        //Draw predators, prey and food
         drawPredators(g, startXCoord, startYCoord, boxSize);
         drawPrey(g, startXCoord, startYCoord, boxSize);
         drawFood(g, startXCoord, startYCoord, boxSize);
     }
     
+    //A method that controls the position in which each predator is drawn
+    //based on their determined positions that are updated in the engine
     private void drawPredators(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        //Predators are represented in red
         g.setColor(Color.red);
+        //For each predator
         for(int i = 0; i < (engine.predRowPosition).size(); i++){
             int predRow = engine.predRowPosition.get(i);
             int predColumn = engine.predColumnPosition.get(i);
+            //Draw a predator based on where the top left of the grid starts and the graphical size of 
+            //the predator, and do so for all the predators
             g.fillRect((startXCoord + predColumn * boxSize), (startYCoord + predRow * boxSize), boxSize, boxSize);
+            //Update the number of predators in the grid
             predPopulation = engine.predRowPosition.size();
         }
     }
     
+    //A method that controls the position in which each prey is drawn
+    //based on their determined positions that are updated in the engine
     private void drawPrey(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        //Prey are represented in black
         g.setColor(Color.black);
+        //For each prey
         for(int i = 0; i < (engine.preyRowPosition).size(); i++){
             int preyRow = engine.preyRowPosition.get(i);
             int preyColumn = engine.preyColumnPosition.get(i);
+            //Draw a prey based on where the top left of the grid starts and the graphical size of 
+            //the prey, and do so for all prey
             g.fillRect((startXCoord + preyColumn * boxSize), (startYCoord + preyRow * boxSize), boxSize, boxSize);
+            //Update the number of prey in the grid
             preyPopulation = engine.preyRowPosition.size();
         }
     }
     
+    //A method that controls the position in which each food item is drawn
+    //based on their determined positions that are updated in the engine
     private void drawFood(Graphics g, int startXCoord, int startYCoord, int boxSize){
+        //Predators are represented in green
         g.setColor(Color.green);
+        //For each food
         for(int i = 0; i < (engine.foodRowPosition).size(); i++){
             int foodRow = engine.foodRowPosition.get(i);
             int foodColumn = engine.foodColumnPosition.get(i);
+            //Draw a food item based on where the top left of the grid starts and the graphical size of 
+            //the food item, and do so for all food items
             g.fillRect((startXCoord + foodColumn * boxSize), (startYCoord + foodRow * boxSize), boxSize, boxSize);
+            //Update the number of food in the grid
             numFood = engine.foodRowPosition.size();
         }
     }
@@ -167,7 +197,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
 
         customLabel.setText("Custom");
 
-        customComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Predator", "Prey", "Food", "Empty Space" }));
+        customComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Predator", "Prey", "Food" }));
         customComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 customComboBoxActionPerformed(evt);
@@ -230,64 +260,73 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        //When the back button is clicked, stop the simulation from running
+        //and head back to the home screen
         switcher.switchToCard(IntroPanel.CARD_NAME);
         animTimer.stop();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        //When the play button is clicked, run the animation
         animTimer.start();
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
+        //When the play button is clicked, stop the animation
         animTimer.stop();
     }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedSliderStateChanged
+        //Change and update the speed of the animation everytime the slider is changed
         animTimer.setDelay(speedSlider.getValue());
     }//GEN-LAST:event_speedSliderStateChanged
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        //When the reset button is clicked, stop the animation
         animTimer.stop();
+        //Reset the  arrays in the engine to zero 
         engine.predRowPosition.clear();
         engine.predColumnPosition.clear();
         engine.preyRowPosition.clear();
         engine.preyColumnPosition.clear();
         engine.foodRowPosition.clear();
         engine.foodColumnPosition.clear();
-        frameNum = 0;
+        //Set the grid back up with new predators and prey
         engine.initialPositionSet();
+        //Reset the statuses
+        frameNum = 0;
         predPopulation = engine.predRowPosition.size();
         preyPopulation = engine.preyRowPosition.size();
         numFood = engine.foodRowPosition.size();
+        //Update the screen with the new predator, prey, and food positions
         repaint();
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void customComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customComboBoxActionPerformed
+        //Whenever the value in the drop down menu changes
+        //If the user wants to add predators
         if(customComboBox.getSelectedItem().equals("Predator")){
             customPred = true;
             customPrey = false;
             customFood = false;
-            customEmpty = false;
-        } else if(customComboBox.getSelectedItem().equals("Prey")){
+        } 
+        //If the user wants to add prey
+        else if(customComboBox.getSelectedItem().equals("Prey")){
             customPred = false;
             customPrey = true;
             customFood = false;
-            customEmpty = false;
-        } else if(customComboBox.getSelectedItem().equals("Food")){
+        } 
+        //If the user wants to add food
+        else if(customComboBox.getSelectedItem().equals("Food")){
             customPred = false;
             customPrey = false;
             customFood = true;
-            customEmpty = false;
-        } else if(customComboBox.getSelectedItem().equals("Empty Space")){
+        } 
+        //Otherwise, the user shouldn't be able to add anything
+        else {
             customPred = false;
             customPrey = false;
             customFood = false;
-            customEmpty = true;
-        } else {
-            customPred = false;
-            customPrey = false;
-            customFood = false;
-            customEmpty = false;
         }
     }//GEN-LAST:event_customComboBoxActionPerformed
 
@@ -311,35 +350,47 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      */
     @Override
     public void mouseClicked(MouseEvent me) {
+        //When the user clicks
         System.out.println("Click: " + me.getX() + ":" + me.getY());
+        //Get position of the click
         x = me.getX();
         y = me.getY();
+        //If the click is inside the grid
         if(x >= startXCoord && x <= endXCoord && y >= startXCoord && y <= endYCoord){
+            //Translate the click X and Y positions to grid X and Y positions
             int xPos = topLeftX(x);
             int yPos = topLeftY(y);
             
+            //If the user selected to add a predator
             if(customPred == true){
+                //Add the new position to the global predator array in the engine
                 engine.predRowPosition.add(yPos-1);
                 engine.predColumnPosition.add(xPos-1);
-            } else if (customPrey == true){
+            } 
+            //If the user selected to add a prey
+            else if (customPrey == true){
+                //Add the new position to the global prey array in the engine
                 engine.preyRowPosition.add(yPos-1);
                 engine.preyColumnPosition.add(xPos-1);
-            } else if (customFood == true){
+            } 
+            //If the user selected to add a food item
+            else if (customFood == true){
+                //Add the new position to the global food array in the engine
                 engine.foodRowPosition.add(yPos-1);
                 engine.foodColumnPosition.add(xPos-1);
-            } else if (customEmpty == true){
-                //If that spot has prey delete
-                //If that spot has pred delete
-                //If that spot has food delete
             }
         }
+        //Update the screen
         repaint();
     }
     
-    //Adding in the wrong position
+    //Method to translate the clicked X position to the grid's X position
     private int topLeftX(int currentX){
         int columnNum = 0;
+        //Finds the point where the click's X position is less than a point on the grid
         for(int i = 0; i < engine.inputSize; i++){
+            //When the point's X position is less than the grid
+            //Then the point on the grid is based on the number of columns counted
             if(startXCoord + i * boxSize >= currentX){
                 System.out.println(i);
                 break;
@@ -349,9 +400,13 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         return columnNum;
     }
     
+    //Method to translate the clicked Y position to the grid's Y position
     private int topLeftY(int currentY){
         int rowNum = 0;
+        //Finds the point where the click's Y position is less than a point on the grid
         for(int i = 0; i < engine.inputSize; i++){
+            //When the point's Y position is less than the grid
+            //Then the point on the grid is based on the number of rows counted
             if(startYCoord + i * boxSize >= currentY){
                 System.out.println(i);
                 break;
@@ -398,25 +453,16 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
      * animation timer clicks.
      */
     private class AnimTimerTick implements ActionListener {
-
         public void actionPerformed(ActionEvent ae) {
+            //Signal the engine to go to the next frame in the simulation animation
             engine.next(engine.predSign, engine.preySign, engine.foodSign);
+            //Count number of frames
             frameNum++;
+            //Update the status text field
             statusText.setText("Frame Number: " + frameNum + "\nPred. Pop.: " + predPopulation + 
                     "\nPrey. Pop.: " + preyPopulation + "\nFood Amount: " + numFood);
-            System.out.println("Num Predators: " + predPopulation);
+            //Update the screen
             repaint();
-            
-//            System.out.println("Prey Row:");
-//            for(int i = 0; i < engine.preyRowPosition.size(); i++){
-//                System.out.print(engine.preyRowPosition.get(i) + ",");
-//            }
-//            System.out.println("\n");
-//            System.out.println("Prey Column:");
-//            for(int i = 0; i < engine.preyColumnPosition.size(); i++){
-//                System.out.print(engine.preyColumnPosition.get(i) + ",");
-//            }
-//            System.out.println("\n");
         }
     }
 }

@@ -10,8 +10,9 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
- *
- * @author michael.roy-diclemen
+ * Main menu screen to start simulation or access instructions 
+ * on how to use the program
+ * @author Haydn Yip
  */
 public class IntroPanel extends javax.swing.JPanel {
     //Declare global variables
@@ -22,12 +23,8 @@ public class IntroPanel extends javax.swing.JPanel {
      * Creates new form IntroPanel
      */
     public IntroPanel(CardSwitcher p) {
-        setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
-        
-        //startButton.setBounds(SimulationFrame.WIDTH/2, SimulationFrame.HEIGHT/2, BUTTON_WIDTH, BUTTON_HEIGHT);
-        //infoButton.setBounds(SimulationFrame.WIDTH/2, startButton.getY() + 20, BUTTON_WIDTH, BUTTON_HEIGHT);
-        //quitButton.setBounds(SimulationFrame.WIDTH/2, infoButton.getY() + 20, BUTTON_WIDTH, BUTTON_HEIGHT);
-        
+        //Set size of the panel to be the same as the frame
+        setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);        
         initComponents();
         switcher = p;
     }
@@ -111,14 +108,17 @@ public class IntroPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-       switcher.switchToCard(SimulationPanel.CARD_NAME);
+        //When the start button is clicked, go to the simulation
+        switcher.switchToCard(SimulationPanel.CARD_NAME);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
+        //When the info button is clicked, go to the information panel
         switcher.switchToCard(InfoPanel.CARD_NAME);
     }//GEN-LAST:event_infoButtonActionPerformed
 
     private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitButtonActionPerformed
+        //When the quit button is clicked, stop the program
         System.exit(0);
     }//GEN-LAST:event_quitButtonActionPerformed
 

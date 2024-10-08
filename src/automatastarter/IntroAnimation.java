@@ -11,14 +11,19 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 /**
- *
- * @author haydnyip
+ * Panel to draw the animation in the intro screen
+ * @author Haydn Yip
  */
 public class IntroAnimation extends javax.swing.JPanel {
+    //Declare global variables
     Timer animTimer;
+    
+    //Declare variables for where and the size of the animation being drawn
     int[] animXPositions = {0,25,50,75,100,125,150,175,200};
     int animYPosition = 60;
     int predPreySize = 25;
+    
+    //Declare variable for the frame number of the animation
     int frame = 0;
             
     /**
@@ -26,6 +31,7 @@ public class IntroAnimation extends javax.swing.JPanel {
      */
     public IntroAnimation() {
         initComponents();
+        //Starts a timer to update
         animTimer = new Timer(250, new IntroAnimation.AnimTimerTick());
         animTimer.start();
     }
@@ -33,8 +39,14 @@ public class IntroAnimation extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        //Write a string onto the panel
         g.drawString("Predator and Prey", 60, 50);  
+        //Every time paintComponent is updated, it will show a certain frame
+        //in the animation like a film/film tape
         switch(frame){
+            //For each frame, call on the method predPreyAnimPositions to set the positions
+            //of the parts of the simple animation
+            //There is a total of 12 frames
             case 1: 
                 predPreyAnimPositions(0,-1,g);
                 break;
@@ -74,12 +86,19 @@ public class IntroAnimation extends javax.swing.JPanel {
         }
     }
     
+    //Helper method to change the positions in the animation
     private void predPreyAnimPositions(int preyPos, int predPos, Graphics g){
+        //If the prey is not not on the screen
         if(preyPos != -1){
+            //Draw a prey at a specific position based on 
+            //predetermined positions in the global array
             g.setColor(Color.black);
             g.fillRect(animXPositions[preyPos], animYPosition, predPreySize, predPreySize);
         }
+        //If the predator is not not on the screen
         if(predPos != -1){
+            //Draw a predator at a specific position based on 
+            //predetermined positions in the global array
             g.setColor(Color.red);
             g.fillRect(animXPositions[predPos], animYPosition, predPreySize, predPreySize);
         }
@@ -108,13 +127,15 @@ public class IntroAnimation extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Everything inside this actionPerformed will happen every time the
-     * animation timer clicks.
+     * Everything inside this actionPerformed will happen every time the animation timer clicks
      */
     private class AnimTimerTick implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
+            //Update the animation
             repaint();
+            //Change the frame
             frame++;
+            //Once the animation has reached the end, loop it back again to the beginning
             if(frame > 11){
                 frame = 0;
             }

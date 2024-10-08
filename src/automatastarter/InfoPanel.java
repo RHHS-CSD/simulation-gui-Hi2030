@@ -10,16 +10,19 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
- *
- * @author michael.roy-diclemen
+ * Panel to display instructions to user
+ * @author Haydn Yip
  */
 public class InfoPanel extends javax.swing.JPanel {
+    //Declare global variables
     public static final String CARD_NAME = "info";
     CardSwitcher switcher = null;
+    
     /**
      * Creates new form IntroPanel
      */
     public InfoPanel(CardSwitcher p) {
+        //Set the panel's size to be the same as the frame
         setSize(SimulationFrame.WIDTH, SimulationFrame.HEIGHT);
         initComponents();
         switcher = p;
@@ -51,7 +54,7 @@ public class InfoPanel extends javax.swing.JPanel {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("Welcome to the Predator and Prey Simulation!\n- PREDATORS are represented with RED\n- PREY are represented with BLACK\n- FOOD is represented in GREEN\n- Empty spots are represented in WHITE\n\nRules:\n- Predator eat prey to reproduce\n- Prey eat food, but have a chance to reproduce as long as \n  there is an empty space next to them\n- If predator or prey don't eat within a certain amount of steps,\n  they will die\n\nHow to Use:\n- You can play, pause, or reset the simulation\n- The speed at which the simulation runs can change\n- Predators, Prey and Food can be customly added or deleted ");
+        jTextArea1.setText("Welcome to the Predator and Prey Simulation!\n- PREDATORS are represented with RED\n- PREY are represented with BLACK\n- FOOD is represented in GREEN\n- Empty spots are represented in WHITE\n\nRules:\n- Predator eat prey in order to have a chance to reproduce\n- Prey eat food in order to have a chance to reproduce\n- If predator or prey don't eat within a certain amount of steps,\n  they will die\n\nHow to Use:\n- You can play, pause, or reset the simulation\n- The speed at which the simulation runs can change\n- Predators, Prey and Food can be customly added or deleted ");
         jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -80,6 +83,7 @@ public class InfoPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        //When the back button is clicked, go back to the home screen
         switcher.switchToCard(IntroPanel.CARD_NAME);
     }//GEN-LAST:event_backButtonActionPerformed
 

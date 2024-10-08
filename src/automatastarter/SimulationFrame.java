@@ -21,7 +21,8 @@ C- Mouse
 SimulationPanel implements MouseListener and then adds the listener to the panel
 
 D - Animation Timer - is set up in the Constructor of SimulationPanel
- */
+*/
+
 package automatastarter;
 
 import utils.CardSwitcher;
@@ -32,22 +33,25 @@ import java.awt.event.ComponentAdapter;
 import javax.swing.Timer;
 
 /**
- *
- * @author michael.roy-diclemen
+ * Frame to hold all panels being used in this simulation program
+ * @author Haydn Yip
  */
 public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,ActionListener{
     //Declare global variables
     CardLayout cl;
     SimulationPanel sp;
-    final int FRAME_WIDTH = 700;
-    final int FRAME_HEIGHT = 700;
     Timer t = new Timer(10, this);
+    
+    //Declare the standardized size of the frame
+    final int FRAME_WIDTH = 700;
+    final int FRAME_HEIGHT = 600;
 
     /**
      * Creates new form SimulationFrame
      */
     public SimulationFrame() {
         initComponents();
+        //Start timer
         t.start();
 
         //Card layout shows one panel at a time
@@ -153,6 +157,7 @@ public class SimulationFrame extends javax.swing.JFrame implements CardSwitcher,
         });
     }
 
+    //Switch the panel being shown
     @Override
     public void switchToCard(String cardName) {
         cl.show(cardPanel, cardName);
