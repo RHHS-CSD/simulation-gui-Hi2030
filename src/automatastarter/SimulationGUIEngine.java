@@ -37,7 +37,7 @@ public class SimulationGUIEngine {
     
     public SimulationGUIEngine(){
         inputPred = 2;
-        inputPrey = 100;
+        inputPrey = 2;
         inputSize = 20;
         globalGrid = new String[inputSize][inputSize];
     }
@@ -51,8 +51,7 @@ public class SimulationGUIEngine {
     public void next (String predSign, String preySign, String foodSign){
         generateFood(foodSign);
         predation(predSign, preySign, foodSign);
-        //eatFood(predSign, preySign, foodSign);
-        reproduction(predSign, preySign, foodSign);
+        eatFood(predSign, preySign, foodSign);
         movement(predSign, preySign, foodSign);
         checkOutOfBounds();
     }
@@ -177,7 +176,27 @@ public class SimulationGUIEngine {
     //Used to check if prey is near predator, and if so, the predator eats the prey and reproduces
     private void predation(String predSign, String preySign, String foodSign){
         Random rand = new Random();
-        
+
+        //For each prey
+        for(int i = 0; i < predRowPosition.size(); i++){
+            //For each prey
+            for(int k = 0; k < preyRowPosition.size();k++){
+                //If the predator is on top of the prey
+                if(preyRowPosition.get(k) == predRowPosition.get(i) && preyColumnPosition.get(k) == predColumnPosition.get(i)){
+                    preyRowPosition.remove(k);
+                    preyColumnPosition.remove(k);
+                    //1/500 chance for a prey to reproduce after eating food
+                    if(rand.nextInt(1) == 1){
+                        try{
+                            predRowPosition.add(predRowPosition.get(i));
+                            predColumnPosition.add(predColumnPosition.get(i));
+                        } catch(ArrayIndexOutOfBoundsException e){
+
+                        }
+                    }
+                }
+            } 
+        /*
         //For each predator
         for(int i = 0; i < predRowPosition.size(); i++){
             //Checks positions around the predator
@@ -271,71 +290,10 @@ public class SimulationGUIEngine {
                     }
                     break;
                 }
-            }
+            }*/
         }
     }
-    
-    //Used for prey to randomly reproduce if they have space next to them
-    private void reproduction(String predSign, String preySign, String foodSign){
-        Random r = new Random();
-        //Iterate through each prey
-        for(int i = 0; i < preyRowPosition.size(); i++){
-            //Check the spaces around the prey
-            checkSurroundings(preyRowPosition.get(i), preyColumnPosition.get(i), predSign, preySign, foodSign);
-            //Iterate through the open spaces available
-            for(int j = 0; j < openSpaceArray.length; j++){
-                //Have 1% chance for prey to reproduce if empty space next to it
-                int rand = r.nextInt(1000)+1;
-                //If there is an open space and if the 1% chance is achieved
-                if(openSpaceArray[j] == true && rand == 1){
-                    switch (j) {
-                        //If the open space is above, then add a prey above the current one
-                        case 1:                          
-                            try{
-                                preyRowPosition.add(preyRowPosition.get(i)-1);
-                                preyColumnPosition.add(preyRowPosition.get(i));
-                                globalGrid[preyRowPosition.get(i)-1][preyRowPosition.get(i)] = preySign;
-                            } catch (ArrayIndexOutOfBoundsException e){
-                            }
-                            break;
-                        //If the open space is below, then add a prey below the current one
-                        case 2:
-                            try{
-                                preyRowPosition.add(preyRowPosition.get(i)+1);
-                                preyColumnPosition.add(preyRowPosition.get(i));
-                                globalGrid[preyRowPosition.get(i)+1][preyRowPosition.get(i)] = preySign;
-                            } catch (ArrayIndexOutOfBoundsException e){
-                                
-                            }
-                            break;
-                        //If the open space is to the left, then add a prey to the left of the current one
-                        case 3:
-                            try{
-                                preyRowPosition.add(preyRowPosition.get(i));
-                                preyColumnPosition.add(preyRowPosition.get(i)-1);
-                                globalGrid[preyRowPosition.get(i)][preyRowPosition.get(i)-1] = preySign;
-                            } catch (ArrayIndexOutOfBoundsException e){
-                                
-                            }
-                            break;
-                        //If the open space is to the right, then add a prey to the right of the current one
-                        case 4:
-                            try{
-                                preyRowPosition.add(preyRowPosition.get(i));
-                                preyColumnPosition.add(preyRowPosition.get(i)+1);
-                                globalGrid[preyRowPosition.get(i)][preyRowPosition.get(i)+1] = preySign;
-                            } catch (ArrayIndexOutOfBoundsException e){
-                                
-                            }
-                            break;
-                        default: break;
-                    }
-                                
-                }
-            }
-        }
-    }
-    
+      
     //Allows the predators and prey to move around the grid
     private void movement(String predSign, String preySign, String foodSign){
         //Declare variables
@@ -457,7 +415,7 @@ public class SimulationGUIEngine {
                 //If there is an empty space
                 if(globalGrid[i][j].equals(".")){
                     //There is a 1/5000 or 0.0002% chance of food appearing in an empty spot
-                    if(r.nextInt(5000)+1 == 1){
+                    if(r.nextInt(500)+1 == 1){
                         //If food does spawn, add its position to the arrays and add to the grid
                         globalGrid[i][j] = foodSign;
                         foodRowPosition.add(i);
@@ -470,67 +428,51 @@ public class SimulationGUIEngine {
     
     //Checks the spaces around every prey, and if there is food to eat
     private void eatFood(String predSign, String preySign, String foodSign){
+        Random rand = new Random();
+
         //For each prey
         for(int i = 0; i < preyRowPosition.size(); i++){
-            //Checks spaces around the prey
-            checkSurroundings(preyRowPosition.get(i), preyColumnPosition.get(i), predSign, preySign, foodSign);
-            //Check if any food are next to the prey
-            for(int j = 0; j < nearPreyArray.length; j++){
-                //If prey is next to food, eat/remove food
-                //If prey is next to multiple food, eat the one above first, else below, else left, else the one on the right
-                if(nearFoodArray[j] == true){
-                    switch (j) {
-                        case 1:
-                            //Replaces the dead prey by reproducing and creating another predator
-                            globalGrid[preyRowPosition.get(i)-1][preyColumnPosition.get(i)] = ".";
-                            for(int k = 0; k < foodRowPosition.size(); k++){
-                                if(foodRowPosition.get(k) == preyRowPosition.get(i)-1 && foodColumnPosition.get(k) == preyColumnPosition.get(i)){
-                                    foodRowPosition.remove(k);
-                                    foodColumnPosition.remove(k);
-                                    break;
-                                }
-                            }
-                            break;
-                        case 2:
-                            globalGrid[preyRowPosition.get(i)+1][preyColumnPosition.get(i)] = ".";
-                            for(int k = 0; k < foodRowPosition.size(); k++){
-                                if(foodRowPosition.get(k) == preyRowPosition.get(i)+1 && foodColumnPosition.get(k) == preyColumnPosition.get(i)){
-                                    foodRowPosition.remove(k);
-                                    foodColumnPosition.remove(k);
-                                    break;
-                                }
-                            }
-                            break;
-                        case 3:
-                            globalGrid[preyRowPosition.get(i)][preyColumnPosition.get(i)-1] = ".";
-                            for(int k = 0; k < foodRowPosition.size(); k++){
-                                if(foodRowPosition.get(k) == preyRowPosition.get(i) && foodColumnPosition.get(k) == preyColumnPosition.get(i)-1){
-                                    foodRowPosition.remove(k);
-                                    foodColumnPosition.remove(k);
-                                    break;
-                                }
-                            }
-                            break;
-                        default:
-                            globalGrid[preyRowPosition.get(i)][preyColumnPosition.get(i)-1] = ".";
-                            for(int k = 0; k < preyRowPosition.size(); k++){
-                                if(foodRowPosition.get(k) == preyRowPosition.get(i) && foodColumnPosition.get(k) == preyColumnPosition.get(i)+1){
-                                    foodRowPosition.remove(k);
-                                    foodColumnPosition.remove(k);
-                                    break;
-                                }
-                            }
-                            break;
+            for(int k = 0; k < foodRowPosition.size();k++){
+                if(foodRowPosition.get(k) == preyRowPosition.get(i) && foodColumnPosition.get(k) == preyColumnPosition.get(i)){
+                    foodRowPosition.remove(k);
+                    foodColumnPosition.remove(k);
+                    //1/5 chance for a prey to reproduce after eating food
+                    if(rand.nextInt(5) == 1){
+                        try{
+                            preyRowPosition.add(preyRowPosition.get(i));
+                            preyColumnPosition.add(preyColumnPosition.get(i));
+                        } catch(ArrayIndexOutOfBoundsException e){
+
+                        }
                     }
-                    break;
                 }
-            }
+            } 
         }
+//        System.out.print("Food Row: ");
+//        for(int k = 0; k < foodRowPosition.size(); k++){
+//            System.out.print(foodRowPosition.get(k) + ",");
+//        }
+//        System.out.println("");
+//        System.out.print("Food Column: ");
+//        for(int j = 0; j < foodColumnPosition.size(); j++){
+//            System.out.print(foodColumnPosition.get(j) + ",");
+//        }
+//        System.out.println("");
+//        System.out.print("Prey Row: ");
+//        for(int k = 0; k < preyRowPosition.size(); k++){
+//            System.out.print(preyRowPosition.get(k) + ",");
+//        }
+//        System.out.println("");
+//        System.out.print("Prey Column: ");
+//        for(int j = 0; j < preyColumnPosition.size(); j++){
+//            System.out.print(preyColumnPosition.get(j) + ",");
+//        }
+//        System.out.println("\n");
     }
     
     //Helper method to determine what is in the spaces around the selected positions
     //In this program, it is used to determine what is next to the predator or prey
-    private void checkSurroundings(int rowPosition, int columnPosition, String predSign, String preySign, String foodSign){
+   private void checkSurroundings(int rowPosition, int columnPosition, String predSign, String preySign, String foodSign){
         //Declare the positions around the predator/prey
         int up = rowPosition - 1;
         int down = rowPosition + 1;
@@ -562,7 +504,6 @@ public class SimulationGUIEngine {
                 //Check if there is food nearby
                 else if((globalGrid[up][columnPosition]).equals(foodSign)){
                     nearFoodArray[0] = true;
-                    openSpaceArray[0] = false;
                 }
             }
             //Check down for out of bounds
@@ -582,7 +523,6 @@ public class SimulationGUIEngine {
                 //Check if there is food nearby
                 else if((globalGrid[down][columnPosition]).equals(foodSign)){
                     nearFoodArray[1] = true;
-                    openSpaceArray[1] = false;
                 }
             }
             //Check left for out of bounds
@@ -602,7 +542,6 @@ public class SimulationGUIEngine {
                 //Check if there is food nearby
                 else if((globalGrid[rowPosition][left]).equals(foodSign)){
                     nearFoodArray[2] = true;
-                    openSpaceArray[2] = false;
                 }
             }
             //Check right for out of bounds
@@ -622,7 +561,6 @@ public class SimulationGUIEngine {
                 //Check if there is food nearby
                 else if((globalGrid[rowPosition][right]).equals(foodSign)){
                     nearFoodArray[3] = true;
-                    openSpaceArray[3] = false;
                 }
             }
         } catch(ArrayIndexOutOfBoundsException e){

@@ -263,7 +263,6 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void customComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customComboBoxActionPerformed
-        animTimer.stop();
         if(customComboBox.getSelectedItem().equals("Predator")){
             customPred = true;
             customPrey = false;
@@ -405,6 +404,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
             frameNum++;
             statusText.setText("Frame Number: " + frameNum + "\nPred. Pop.: " + predPopulation + 
                     "\nPrey. Pop.: " + preyPopulation + "\nFood Amount: " + numFood);
+            System.out.println("Num Predators: " + predPopulation);
             repaint();
             
 //            System.out.println("Prey Row:");
