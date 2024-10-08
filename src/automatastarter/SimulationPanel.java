@@ -62,10 +62,10 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
         boxSize = 25;
         
         //Draw grid
-        for(int i = 0; i <= engine.globalGrid.length; i++){
+        for(int i = 0; i <= engine.inputSize; i++){
             g.drawLine(startXCoord, (startYCoord + i * boxSize), endXCoord, (startYCoord + i * boxSize));
         }
-        for(int j = 0; j <= engine.globalGrid.length; j++){
+        for(int j = 0; j <= engine.inputSize; j++){
             g.drawLine((startXCoord + j * boxSize), startYCoord, (startXCoord + j * boxSize), endYCoord);
         }
         
@@ -340,7 +340,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     //Adding in the wrong position
     private int topLeftX(int currentX){
         int columnNum = 0;
-        for(int i = 0; i < engine.globalGrid[0].length; i++){
+        for(int i = 0; i < engine.inputSize; i++){
             if(startXCoord + i * boxSize >= currentX){
                 System.out.println(i);
                 break;
@@ -352,7 +352,7 @@ public class SimulationPanel extends javax.swing.JPanel implements MouseListener
     
     private int topLeftY(int currentY){
         int rowNum = 0;
-        for(int i = 0; i < engine.globalGrid.length; i++){
+        for(int i = 0; i < engine.inputSize; i++){
             if(startYCoord + i * boxSize >= currentY){
                 System.out.println(i);
                 break;
